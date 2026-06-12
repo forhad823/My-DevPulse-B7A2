@@ -1,0 +1,10 @@
+commonjs_esm
+IIFE
+express_learning
+node_modules
+.env
+.antigravitycli
+project-requirement.md
+note.txt
+
+.vercel
