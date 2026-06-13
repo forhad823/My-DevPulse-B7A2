@@ -20,6 +20,21 @@ const createUserIntoDB = async (payload: IUser) => {
   return result;
 };
 
+const getUserInfoFromDB = async (id: string) => {
+  const result = await pool.query(
+    `
+    SELECT id, name, role
+    FROM users
+    WHERE id = $1
+    LIMIT 1
+    `,
+    [id],
+  );
+
+  return result.rows[0];
+};
+
 export const userService = {
   createUserIntoDB,
+  getUserInfoFromDB,
 };

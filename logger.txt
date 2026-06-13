@@ -164,3 +164,19 @@ Method -> POST, Time -> 1781370716821, URL -> /api/issues
 Method -> POST, Time -> 1781370803152, URL -> /api/issues
 
 Method -> POST, Time -> 1781370972109, URL -> /api/issues
+
+Method -> GET, Time -> 1781374665086, URL -> /api/issues/6
+
+Method -> GET, Time -> 1781375160453, URL -> /api/issues/6
+
+Method -> GET, Time -> 1781376349552, URL -> /api/issues/6
+
+Method -> GET, Time -> 1781376456727, URL -> /api/issues/6
+
+Method -> GET, Time -> 1781376520790, URL -> /api/issues/1
+
+Method -> GET, Time -> 1781376677430, URL -> /api/issues/1
+
+Method -> GET, Time -> 1781376694419, URL -> /api/issues/1
+
+Method -> GET, Time -> 1781377313716, URL -> /api/issues/1
