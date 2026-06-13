@@ -20,7 +20,7 @@ const globalErrorHandler: ErrorRequestHandler = (
   res.status(statusCode).json({
     success: false,
     message: err.message || "Internal Server Error",
-    error: err.stack,
+    errors: err.stack,
   });
 };
 

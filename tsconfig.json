@@ -41,7 +41,7 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  
-  "include": ["src/**/*"],
-  "exclude": []
+
+  "include": ["src/**/*"]
+  // "exclude": []
 }

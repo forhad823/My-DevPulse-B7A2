@@ -1,10 +1,11 @@
-import type { NextFunction, Request, Response } from "express";
+// import type { NextFunction, Request, RequestHandler, Response } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import type { ROLES } from "../types";
 import config from "../config";
 import { pool } from "../db";
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 
-const auth = (...roles: ROLES[]) => {
+const auth = (...roles: ROLES[]): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       // console.log("this is protected Route");
@@ -28,12 +29,13 @@ const auth = (...roles: ROLES[]) => {
 
       const userData = await pool.query(
         `
-        SELECT * FROM users WHERE email=$1
+        SELECT * FROM users WHERE id=$1
         `,
-        [decoded.email],
+        [decoded.id],
       );
+      console.log(userData);
       const user = userData.rows[0];
-      //   console.log(user);
+
       if (userData.rows.length === 0) {
         res.status(404).json({
           success: false,
@@ -41,7 +43,7 @@ const auth = (...roles: ROLES[]) => {
         });
       }
 
-    /*   if (!user?.is_active) {
+      /*   if (!user?.is_active) {
         res.status(403).json({
           success: false,
           message: "Forbidden!!",
@@ -59,8 +61,9 @@ const auth = (...roles: ROLES[]) => {
           message: "Unauthorized!,This role have no access!",
         });
       }
-
-      req.user = decoded; // req: {user : {}}
+      req.userName = decoded.name;
+      req.userID = decoded.id; // req: {user : {}}
+      req.userRole = decoded.role;
 
       next();
     } catch (error) {
@@ -68,3 +71,5 @@ const auth = (...roles: ROLES[]) => {
     }
   };
 };
+
+export default auth;
