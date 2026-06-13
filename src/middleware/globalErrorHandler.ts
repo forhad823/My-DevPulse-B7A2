@@ -1,14 +1,23 @@
-import type { NextFunction, Request, Response } from "express";
+import type {
+  NextFunction,
+  Request,
+  Response,
+  ErrorRequestHandler,
+} from "express";
 
-const globalErrorHandler = (
-  err: any,
+interface IAppError extends Error {
+  statusCode?: number;
+}
+
+const globalErrorHandler: ErrorRequestHandler = (
+  err: IAppError,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  // console.error(err.stack); // Log the error
+  const statusCode = err.statusCode || 500;
 
-  res.status(500).json({
+  res.status(statusCode).json({
     success: false,
     message: err.message || "Internal Server Error",
     error: err.stack,

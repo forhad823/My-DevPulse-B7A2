@@ -6,5 +6,6 @@ node_modules
 .antigravitycli
 project-requirement.md
 note.txt
+logger.txt
 
 .vercel
