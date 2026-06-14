@@ -34,6 +34,91 @@ const getSingleIssueFromDB = async (id: string) => {
   return result.rows[0];
 };
 
+const getAllIssuesFromDB = async (
+  sort?: string,
+  type?: string,
+  status?: string,
+) => {
+  // building dynamic WHERE clause based on optional query params
+  const conditions: string[] = [];
+  const values: unknown[] = [];
+  let paramIndex = 1;
+
+  if (type) {
+    conditions.push(`type = $${paramIndex++}`);
+    values.push(type);
+  }
+
+  if (status) {
+    conditions.push(`status = $${paramIndex++}`);
+    values.push(status);
+  }
+
+  // Join conditions with AND, or empty string if no filters
+  const whereClause =
+    conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+  // ascending and descending order. descending default
+  const sortOrder = sort === "oldest" ? "ASC" : "DESC";
+
+  const issuesResult = await pool.query(
+    `
+      SELECT *
+      FROM issues
+      ${whereClause}
+      ORDER BY created_at ${sortOrder}
+    `,
+    values,
+  );
+
+  const issues = issuesResult.rows;
+
+  // If no issues found, return empty array early
+  if (issues.length === 0) {
+    return [];
+  }
+
+  //Collect all unique reporter IDs from the issues using Set
+  const reporterIds = [...new Set(issues.map((issue) => issue.reporter_id))];
+
+  const placeholders = reporterIds
+    .map((_, index) => `$${index + 1}`)
+    .join(", ");
+  const usersResult = await pool.query(
+    `
+      SELECT id, name, role
+      FROM users
+      WHERE id IN (${placeholders})
+    `,
+    reporterIds,
+  );
+
+  // building a Map for O(1) lookups
+  const usersMap = new Map(usersResult.rows.map((user) => [user.id, user]));
+  return issues.map((issue) => {
+    const {
+      id,
+      title,
+      description,
+      type,
+      status,
+      reporter_id,
+      created_at,
+      updated_at,
+    } = issue;
+    return {
+      id,
+      title,
+      description,
+      type,
+      status,
+      reporter: usersMap.get(reporter_id) ?? null,
+      created_at,
+      updated_at,
+    };
+  });
+};
+
 const updateIssueIntoDB = async (id: string, payload: Partial<TIssue>) => {
   const updates: string[] = [];
   const values: unknown[] = [];
@@ -72,8 +157,9 @@ const updateIssueIntoDB = async (id: string, payload: Partial<TIssue>) => {
   return result.rows[0];
 };
 
-export const IssueService = {
+export const issueService = {
   createIssueIntoDB,
   getSingleIssueFromDB,
   updateIssueIntoDB,
+  getAllIssuesFromDB,
 };

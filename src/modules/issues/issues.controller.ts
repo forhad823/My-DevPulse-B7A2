@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { IssueService } from "./issues.service";
+import { issueService } from "./issues.service";
 import type { JwtPayload } from "jsonwebtoken";
 import {
   sendErrorResponse,
@@ -18,8 +18,24 @@ const createIssue = async (req: Request, res: Response) => {
     }
 
     const [id, role] = [req.userID, req.userRole];
-    const result = await IssueService.createIssueIntoDB(req.body, id);
+    const result = await issueService.createIssueIntoDB(req.body, id);
     sendSuccessResponse(res, 201, "Issue created successfully", result);
+  } catch (error: unknown) {
+    sendErrorResponse(res, 500, "Internal Server Error", error);
+  }
+};
+
+const getAllIssues = async (req: Request, res: Response) => {
+  try {
+    const { sort, type, status } = req.query;
+
+    const issues = await issueService.getAllIssuesFromDB(
+      sort as string | undefined, 
+      type as string | undefined, 
+      status as string | undefined, 
+    );
+
+    sendSuccessResponse(res, 200, "Issues retrieved successfully", issues);
   } catch (error: unknown) {
     sendErrorResponse(res, 500, "Internal Server Error", error);
   }
@@ -28,7 +44,7 @@ const createIssue = async (req: Request, res: Response) => {
 const getSingleIssue = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const issue = await IssueService.getSingleIssueFromDB(id as string);
+    const issue = await issueService.getSingleIssueFromDB(id as string);
     const userInfo = await userService.getUserInfoFromDB(issue.reporter_id);
     delete issue.reporter_id;
 
@@ -57,7 +73,7 @@ const updateIssue = async (req: Request, res: Response) => {
   const issueid = req.params.id;
   try {
     // const [userid, userRole] = [req.userID, req.userRole];
-    
+
     if (!req.body || Object.keys(req.body).length === 0) {
       sendErrorResponse(
         res,
@@ -66,7 +82,7 @@ const updateIssue = async (req: Request, res: Response) => {
         "Request body is empty or null or undefined. A valid request body with title, description, or type fields is required.",
       );
     }
-    const updatedIssue = await IssueService.updateIssueIntoDB(
+    const updatedIssue = await issueService.updateIssueIntoDB(
       issueid as string,
       req.body,
     );
@@ -79,4 +95,5 @@ export const issuesController = {
   createIssue,
   getSingleIssue,
   updateIssue,
+  getAllIssues,
 };

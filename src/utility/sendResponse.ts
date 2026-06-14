@@ -48,48 +48,9 @@ export const sendErrorResponse = (
     }
   }
 
-  /*   // 2. Check if it's a PostgreSQL pg driver error containing 'detail'
-  if (
-    error &&
-    typeof error === "object" &&
-    "detail" in error &&
-    typeof (error as { detail: unknown }).detail === "string"
-  ) {
-    detail = (error as { detail: string }).detail;
-  } */
-
   res.status(statusCode).json({
     success: false,
     message: resolvedMessage,
     errors: error || resolvedMessage,
   });
 };
-
-/*   • With custom message:
-    sendErrorResponse(400, "Invalid user details provided", error, res);          
-  
-  • Without custom message (defaults to the error's message):
-    sendErrorResponse(500, undefined, error, res); */
-
-/* 
-res.status(201).json({
-  success: true,
-  message: "User registered successfully",
-  data: result.rows[0],
-});
-
-Standard Success Response Structure
-
-{
-  "success": true,
-  "message": "Operation description",
-  "data": "Response data"
-}
-Standard Error Response Structure
-
-{
-  "success": false,
-  "message": "Error description",
-  "errors": "Error details"
-}
- */

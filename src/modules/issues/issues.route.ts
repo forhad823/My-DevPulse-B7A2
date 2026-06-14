@@ -2,6 +2,7 @@ import { Router } from "express";
 import { USER_ROLE } from "../../types";
 import { issuesController } from "./issues.controller";
 import auth from "../../middleware/auth";
+import updateAuth from "../../middleware/updateAuth";
 
 const router = Router();
 //3) create issue
@@ -12,14 +13,16 @@ router.post(
 );
 
 //4) get all issue
+router.get("/", issuesController.getAllIssues);
 
 //5) get single issue
 router.get("/:id", issuesController.getSingleIssue);
+
 //6) update issue
-// PATCH / api / issues /: id
 router.patch(
   "/:id",
   auth(USER_ROLE.contributor, USER_ROLE.maintainer),
+  updateAuth(USER_ROLE.contributor, USER_ROLE.maintainer),
   issuesController.updateIssue,
 );
 
