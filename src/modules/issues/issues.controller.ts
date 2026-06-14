@@ -6,9 +6,17 @@ import {
   sendSuccessResponse,
 } from "../../utility/sendResponse";
 import { userService } from "../user/user.service";
+import { validateAndProcessIssue } from "../../utility/validate_issue";
 
 const createIssue = async (req: Request, res: Response) => {
+  console.log(req.body);
   try {
+    // checking is request body contains all required properties of issue
+    const invalidInput = validateAndProcessIssue(req.body);
+    if (invalidInput !== true) {
+      return sendErrorResponse(res, 400, "Bad Request", invalidInput);
+    }
+
     const [id, role] = [req.userID, req.userRole];
     const result = await IssueService.createIssueIntoDB(req.body, id);
     sendSuccessResponse(res, 201, "Issue created successfully", result);
@@ -45,7 +53,30 @@ const getSingleIssue = async (req: Request, res: Response) => {
   }
 };
 
+const updateIssue = async (req: Request, res: Response) => {
+  const issueid = req.params.id;
+  try {
+    // const [userid, userRole] = [req.userID, req.userRole];
+    
+    if (!req.body || Object.keys(req.body).length === 0) {
+      sendErrorResponse(
+        res,
+        400,
+        "Invalid input",
+        "Request body is empty or null or undefined. A valid request body with title, description, or type fields is required.",
+      );
+    }
+    const updatedIssue = await IssueService.updateIssueIntoDB(
+      issueid as string,
+      req.body,
+    );
+    sendSuccessResponse(res, 200, "Issue updated successfully", updatedIssue);
+  } catch (error: unknown) {
+    sendErrorResponse(res, 500, undefined, error);
+  }
+};
 export const issuesController = {
   createIssue,
   getSingleIssue,
+  updateIssue,
 };

@@ -16,9 +16,6 @@ const loginUserIntoDB = async (payload: {
   password: string;
 }) => {
   const { email, password } = payload;
-  // 1. check if the user exists -> Done
-  // 2. compare the password -> Done
-  // 3. Generate Token ->
 
   // 1. Check if the user exists
   const userData = await pool.query(
