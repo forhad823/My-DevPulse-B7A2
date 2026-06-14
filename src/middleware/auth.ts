@@ -43,12 +43,12 @@ const auth = (...roles: ROLES[]): RequestHandler => {
         });
       }
 
-      /*   if (!user?.is_active) {
+        if (!user?.is_active) {
         res.status(403).json({
           success: false,
           message: "Forbidden!!",
         });
-      }     */
+      }    
 
       // console.log("Auth Role: ", user.role);
 

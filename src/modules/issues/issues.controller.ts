@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import { IssueService } from "./issues.service";
 import type { JwtPayload } from "jsonwebtoken";
-import { userInfo } from "node:os";
 import {
   sendErrorResponse,
   sendSuccessResponse,
@@ -24,7 +23,7 @@ const getSingleIssue = async (req: Request, res: Response) => {
     const issue = await IssueService.getSingleIssueFromDB(id as string);
     const userInfo = await userService.getUserInfoFromDB(issue.reporter_id);
     delete issue.reporter_id;
-    // issue.reporter = userInfo;
+
     const formattedIssue = {
       id: issue.id,
       title: issue.title,
