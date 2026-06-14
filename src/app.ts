@@ -4,7 +4,6 @@ import express, {
   type Response,
 } from "express";
 
-import logger from "./middleware/logger";
 import CookieParser from "cookie-parser";
 import cors from "cors";
 import globalErrorHandler from "./middleware/globalErrorHandler";
@@ -19,9 +18,6 @@ app.use(CookieParser());
 app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
-
-// -- custom middlewares
-app.use(logger);
 
 app.use(
   cors({

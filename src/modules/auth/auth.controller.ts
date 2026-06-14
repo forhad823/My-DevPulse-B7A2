@@ -9,7 +9,6 @@ import {
 import { ROLES } from "../../utility/roles";
 
 const registerUser = async (req: Request, res: Response) => {
-  console.log("req.body", req.body);
   const { role, email } = req.body;
   try {
     if (!ROLES.includes(role)) {

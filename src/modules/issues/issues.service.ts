@@ -157,9 +157,20 @@ const updateIssueIntoDB = async (id: string, payload: Partial<TIssue>) => {
   return result.rows[0];
 };
 
+const deleteIssueFromDB = async (id: string) => {
+  const result = await pool.query(
+    `
+    DELETE FROM issues WHERE id=$1  
+      `,
+    [id],
+  );
+  return result;
+};
+
 export const issueService = {
   createIssueIntoDB,
   getSingleIssueFromDB,
   updateIssueIntoDB,
   getAllIssuesFromDB,
+  deleteIssueFromDB,
 };

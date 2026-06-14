@@ -9,7 +9,6 @@ import { userService } from "../user/user.service";
 import { validateAndProcessIssue } from "../../utility/validate_issue";
 
 const createIssue = async (req: Request, res: Response) => {
-  console.log(req.body);
   try {
     // checking is request body contains all required properties of issue
     const invalidInput = validateAndProcessIssue(req.body);
@@ -30,9 +29,9 @@ const getAllIssues = async (req: Request, res: Response) => {
     const { sort, type, status } = req.query;
 
     const issues = await issueService.getAllIssuesFromDB(
-      sort as string | undefined, 
-      type as string | undefined, 
-      status as string | undefined, 
+      sort as string | undefined,
+      type as string | undefined,
+      status as string | undefined,
     );
 
     sendSuccessResponse(res, 200, "Issues retrieved successfully", issues);
@@ -72,8 +71,6 @@ const getSingleIssue = async (req: Request, res: Response) => {
 const updateIssue = async (req: Request, res: Response) => {
   const issueid = req.params.id;
   try {
-    // const [userid, userRole] = [req.userID, req.userRole];
-
     if (!req.body || Object.keys(req.body).length === 0) {
       sendErrorResponse(
         res,
@@ -91,9 +88,35 @@ const updateIssue = async (req: Request, res: Response) => {
     sendErrorResponse(res, 500, undefined, error);
   }
 };
+
+const deleteIssue = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const result = await issueService.deleteIssueFromDB(id as string);
+    // console.log(result);
+    if (result.rowCount === 0) {
+      // rowCount 0 means the issue was not found
+      return sendErrorResponse(
+        res,
+        404,
+        "Issue not found",
+        "Possible you have passed the incorrect issue id parameter in the url or api or may be the issue doesn't exist on issues table, or already deleted",
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Issue deleted successfully",
+    });
+  } catch (error: unknown) {
+    sendErrorResponse(res, 500, undefined, error);
+  }
+};
+
 export const issuesController = {
   createIssue,
   getSingleIssue,
   updateIssue,
   getAllIssues,
+  deleteIssue,
 };
