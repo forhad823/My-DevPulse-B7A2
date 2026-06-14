@@ -4,8 +4,8 @@ express_learning
 node_modules
 .env
 .antigravitycli
-project-requirement.md
-note.txt
-logger.txt
+project-requirement
+note
+logger
 
 .vercel
