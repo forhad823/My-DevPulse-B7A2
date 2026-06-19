@@ -1,25 +1,5 @@
 import type { Response } from "express";
 
-// type TResponse<T> = {
-//   // success: boolean;
-//   // message: string;
-//   data?: T;
-//   // error?: unknown;
-// };
-
-// export const sendSuccessResponse = <T>(
-//   statusCode: number,
-//   message: string,
-//   data: TResponse<T>,
-//   res: Response,
-// ): void => {
-//   res.status(statusCode).json({
-//     success: true,
-//     message: message,
-//     data: data,
-//   });
-// };
-
 export const sendSuccessResponse = <T>(
   res: Response,
   statusCode: number,
